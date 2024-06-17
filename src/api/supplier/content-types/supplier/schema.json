@@ -1,0 +1,72 @@
+{
+  "kind": "collectionType",
+  "collectionName": "suppliers",
+  "info": {
+    "singularName": "supplier",
+    "pluralName": "suppliers",
+    "displayName": "Supplier",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Name": {
+      "type": "string",
+      "required": true
+    },
+    "Telephone": {
+      "type": "string",
+      "required": true
+    },
+    "Email": {
+      "type": "email"
+    },
+    "Address": {
+      "type": "string",
+      "required": false
+    },
+    "ContactPersonName": {
+      "type": "string",
+      "required": false
+    },
+    "QualityScore": {
+      "type": "enumeration",
+      "enum": [
+        "Low",
+        "Medium",
+        "High"
+      ],
+      "required": true,
+      "default": "Medium"
+    },
+    "URL": {
+      "type": "string"
+    },
+    "EstimatedDeliveryDays": {
+      "type": "integer",
+      "required": true,
+      "default": 1
+    },
+    "Note": {
+      "type": "richtext"
+    },
+    "Products": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::product.product",
+      "mappedBy": "Supplier"
+    },
+    "Active": {
+      "type": "boolean",
+      "default": true
+    },
+    "Purchase_Orders": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::purchase-order.purchase-order",
+      "mappedBy": "Supplier"
+    }
+  }
+}

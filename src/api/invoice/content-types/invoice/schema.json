@@ -1,0 +1,70 @@
+{
+  "kind": "collectionType",
+  "collectionName": "invoices",
+  "info": {
+    "singularName": "invoice",
+    "pluralName": "invoices",
+    "displayName": "Invoice",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "InvoiceNumber": {
+      "type": "integer",
+      "unique": true
+    },
+    "Subtotal": {
+      "type": "decimal",
+      "required": true
+    },
+    "Tax": {
+      "type": "decimal",
+      "required": false
+    },
+    "Total": {
+      "type": "decimal",
+      "required": true
+    },
+    "Payment_Method": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::payment-method.payment-method",
+      "inversedBy": "Invoices"
+    },
+    "PaidWith": {
+      "type": "decimal",
+      "required": true
+    },
+    "Returned": {
+      "type": "decimal",
+      "required": true
+    },
+    "ReferenceNumber": {
+      "type": "integer"
+    },
+    "NIF": {
+      "type": "integer"
+    },
+    "Invoice_Discount": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::invoice-discount.invoice-discount",
+      "inversedBy": "Invoices"
+    },
+    "Customer": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::customer.customer",
+      "inversedBy": "Invoices"
+    },
+    "Invoice_Products": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::invoice-product.invoice-product",
+      "mappedBy": "Invoice"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "invoice_discounts",
+  "info": {
+    "singularName": "invoice-discount",
+    "pluralName": "invoice-discounts",
+    "displayName": "Invoice_Discount"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "DiscountPercentage": {
+      "type": "integer",
+      "unique": true,
+      "required": true
+    },
+    "Active": {
+      "type": "boolean",
+      "default": true
+    },
+    "Invoices": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::invoice.invoice",
+      "mappedBy": "Invoice_Discount"
+    }
+  }
+}

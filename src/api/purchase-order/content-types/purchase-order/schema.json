@@ -1,0 +1,104 @@
+{
+  "kind": "collectionType",
+  "collectionName": "purchase_orders",
+  "info": {
+    "singularName": "purchase-order",
+    "pluralName": "purchase-orders",
+    "displayName": "Purchase Order",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "OrderNumber": {
+      "type": "string",
+      "required": false
+    },
+    "Supplier": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::supplier.supplier",
+      "inversedBy": "Purchase_Orders"
+    },
+    "Telephone": {
+      "type": "string"
+    },
+    "Warehouse": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::warehouse.warehouse",
+      "inversedBy": "Purchase_Orders"
+    },
+    "Ordered_By": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "Purchase_Orders"
+    },
+    "OrderedDate": {
+      "type": "date",
+      "required": true
+    },
+    "Received_By": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "Purchase_Orders"
+    },
+    "ReceivedDate": {
+      "type": "date"
+    },
+    "Tax": {
+      "type": "decimal",
+      "default": 0
+    },
+    "Freight": {
+      "type": "decimal",
+      "default": 0
+    },
+    "Total": {
+      "type": "decimal",
+      "required": true
+    },
+    "Payment_Method": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::payment-method.payment-method",
+      "inversedBy": "Purchase_Orders"
+    },
+    "Status": {
+      "type": "enumeration",
+      "enum": [
+        "Ordered",
+        "In process",
+        "Received",
+        "Canceled"
+      ],
+      "default": "Ordered"
+    },
+    "Document": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "ShippingAddress": {
+      "type": "richtext",
+      "required": true
+    },
+    "Note": {
+      "type": "richtext"
+    },
+    "PurchaseOrder_Products": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::purchase-order-product.purchase-order-product",
+      "mappedBy": "Purchase_Order"
+    }
+  }
+}

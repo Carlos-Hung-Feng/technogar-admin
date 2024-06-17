@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "purchase_order_products",
+  "info": {
+    "singularName": "purchase-order-product",
+    "pluralName": "purchase-order-products",
+    "displayName": "Purchase Order_Product"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Purchase_Order": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::purchase-order.purchase-order",
+      "inversedBy": "PurchaseOrder_Products"
+    },
+    "Product": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::product.product",
+      "inversedBy": "PurchaseOrder_Products"
+    },
+    "Quantity": {
+      "type": "integer",
+      "required": true,
+      "min": 1,
+      "default": 1
+    },
+    "Price": {
+      "type": "decimal",
+      "required": true
+    }
+  }
+}

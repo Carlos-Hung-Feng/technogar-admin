@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "invoice_products",
+  "info": {
+    "singularName": "invoice-product",
+    "pluralName": "invoice-products",
+    "displayName": "Invoice_Product"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Invoice": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::invoice.invoice",
+      "inversedBy": "Invoice_Products"
+    },
+    "Product": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::product.product",
+      "inversedBy": "Invoice_Products"
+    },
+    "Quantity": {
+      "type": "integer",
+      "required": true
+    },
+    "Price": {
+      "type": "decimal",
+      "required": true
+    }
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "kind": "collectionType",
+  "collectionName": "customers",
+  "info": {
+    "singularName": "customer",
+    "pluralName": "customers",
+    "displayName": "Customer",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "FullName": {
+      "type": "string",
+      "required": true
+    },
+    "Email": {
+      "type": "email"
+    },
+    "Telephone": {
+      "type": "string",
+      "required": true
+    },
+    "Address": {
+      "type": "richtext",
+      "required": true
+    },
+    "Product_Preferences": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::category.category",
+      "inversedBy": "Customers"
+    },
+    "Payment_Method": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::payment-method.payment-method",
+      "inversedBy": "Customers"
+    },
+    "NIF": {
+      "type": "string",
+      "required": false
+    },
+    "LastPurchaseDate": {
+      "type": "date",
+      "required": false
+    },
+    "ProfilePicture": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "Note": {
+      "type": "richtext"
+    },
+    "CustomerType": {
+      "type": "enumeration",
+      "enum": [
+        "Wholesale",
+        "Retail"
+      ],
+      "required": true,
+      "default": "Wholesale"
+    },
+    "Active": {
+      "type": "boolean",
+      "default": true,
+      "required": false
+    },
+    "Invoices": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::invoice.invoice",
+      "mappedBy": "Customer"
+    },
+    "Links": {
+      "type": "richtext"
+    }
+  }
+}

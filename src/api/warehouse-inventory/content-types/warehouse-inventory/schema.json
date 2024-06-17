@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "warehouse_inventories",
+  "info": {
+    "singularName": "warehouse-inventory",
+    "pluralName": "warehouse-inventories",
+    "displayName": "Warehouse Inventory"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Warehouse": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::warehouse.warehouse",
+      "inversedBy": "Warehouse_Inventories"
+    },
+    "Product": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::product.product",
+      "inversedBy": "Warehouse_Inventories"
+    },
+    "Quantity": {
+      "type": "integer",
+      "default": 0,
+      "required": true,
+      "min": 0
+    }
+  }
+}
