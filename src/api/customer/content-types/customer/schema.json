@@ -39,7 +39,7 @@
       "target": "api::payment-method.payment-method",
       "inversedBy": "Customers"
     },
-    "NIF": {
+    "Identifier": {
       "type": "string",
       "required": false
     },

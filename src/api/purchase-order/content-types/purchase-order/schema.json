@@ -41,15 +41,6 @@
       "type": "date",
       "required": true
     },
-    "Received_By": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "plugin::users-permissions.user",
-      "inversedBy": "Purchase_Orders"
-    },
-    "ReceivedDate": {
-      "type": "date"
-    },
     "Tax": {
       "type": "decimal",
       "default": 0
@@ -58,25 +49,11 @@
       "type": "decimal",
       "default": 0
     },
-    "Total": {
-      "type": "decimal",
-      "required": true
-    },
     "Payment_Method": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::payment-method.payment-method",
       "inversedBy": "Purchase_Orders"
-    },
-    "Status": {
-      "type": "enumeration",
-      "enum": [
-        "Ordered",
-        "In process",
-        "Received",
-        "Canceled"
-      ],
-      "default": "Ordered"
     },
     "Document": {
       "type": "media",

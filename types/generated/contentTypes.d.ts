@@ -750,12 +750,17 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.role'
     >;
+    Profile: Attribute.Media;
     Purchase_Orders: Attribute.Relation<
       'plugin::users-permissions.user',
       'oneToMany',
       'api::purchase-order.purchase-order'
     >;
-    Profile: Attribute.Media;
+    Invoices: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::invoice.invoice'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -842,7 +847,7 @@ export interface ApiCustomerCustomer extends Schema.CollectionType {
       'manyToOne',
       'api::payment-method.payment-method'
     >;
-    NIF: Attribute.String;
+    Identifier: Attribute.String;
     LastPurchaseDate: Attribute.Date;
     ProfilePicture: Attribute.Media;
     Note: Attribute.RichText;
@@ -886,10 +891,6 @@ export interface ApiInvoiceInvoice extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    InvoiceNumber: Attribute.Integer & Attribute.Unique;
-    Subtotal: Attribute.Decimal & Attribute.Required;
-    Tax: Attribute.Decimal;
-    Total: Attribute.Decimal & Attribute.Required;
     Payment_Method: Attribute.Relation<
       'api::invoice.invoice',
       'manyToOne',
@@ -897,8 +898,6 @@ export interface ApiInvoiceInvoice extends Schema.CollectionType {
     >;
     PaidWith: Attribute.Decimal & Attribute.Required;
     Returned: Attribute.Decimal & Attribute.Required;
-    ReferenceNumber: Attribute.Integer;
-    NIF: Attribute.Integer;
     Invoice_Discount: Attribute.Relation<
       'api::invoice.invoice',
       'manyToOne',
@@ -913,6 +912,18 @@ export interface ApiInvoiceInvoice extends Schema.CollectionType {
       'api::invoice.invoice',
       'oneToMany',
       'api::invoice-product.invoice-product'
+    >;
+    Status: Attribute.Enumeration<['Pending', 'Paid', 'Canceled']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'Pending'>;
+    Note: Attribute.RichText;
+    InvoiceNumber: Attribute.String & Attribute.Required & Attribute.Unique;
+    NIF: Attribute.String & Attribute.Unique;
+    RNC: Attribute.String;
+    BilledBy: Attribute.Relation<
+      'api::invoice.invoice',
+      'manyToOne',
+      'plugin::users-permissions.user'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -1071,7 +1082,7 @@ export interface ApiProductProduct extends Schema.CollectionType {
   };
   attributes: {
     Name: Attribute.String & Attribute.Required;
-    Description: Attribute.Text;
+    Description: Attribute.Text & Attribute.Required;
     RetailPrice: Attribute.Decimal & Attribute.Required;
     MinimumQuantity: Attribute.Integer &
       Attribute.Required &
@@ -1101,7 +1112,6 @@ export interface ApiProductProduct extends Schema.CollectionType {
       'oneToMany',
       'api::purchase-order-product.purchase-order-product'
     >;
-    Slug: Attribute.UID<'api::product.product', 'Name'>;
     WholesalePrice: Attribute.Decimal & Attribute.Required;
     Invoice_Products: Attribute.Relation<
       'api::product.product',
@@ -1156,24 +1166,13 @@ export interface ApiPurchaseOrderPurchaseOrder extends Schema.CollectionType {
       'plugin::users-permissions.user'
     >;
     OrderedDate: Attribute.Date & Attribute.Required;
-    Received_By: Attribute.Relation<
-      'api::purchase-order.purchase-order',
-      'manyToOne',
-      'plugin::users-permissions.user'
-    >;
-    ReceivedDate: Attribute.Date;
     Tax: Attribute.Decimal & Attribute.DefaultTo<0>;
     Freight: Attribute.Decimal & Attribute.DefaultTo<0>;
-    Total: Attribute.Decimal & Attribute.Required;
     Payment_Method: Attribute.Relation<
       'api::purchase-order.purchase-order',
       'manyToOne',
       'api::payment-method.payment-method'
     >;
-    Status: Attribute.Enumeration<
-      ['Ordered', 'In process', 'Received', 'Canceled']
-    > &
-      Attribute.DefaultTo<'Ordered'>;
     Document: Attribute.Media;
     ShippingAddress: Attribute.RichText & Attribute.Required;
     Note: Attribute.RichText;
@@ -1240,54 +1239,6 @@ export interface ApiPurchaseOrderProductPurchaseOrderProduct
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::purchase-order-product.purchase-order-product',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
-export interface ApiShipmentShipment extends Schema.CollectionType {
-  collectionName: 'shipments';
-  info: {
-    singularName: 'shipment';
-    pluralName: 'shipments';
-    displayName: 'Shipment';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    Origin: Attribute.Enumeration<['China', 'United State']> &
-      Attribute.Required;
-    Destination: Attribute.Enumeration<['Dominican Republic']> &
-      Attribute.Required;
-    ModeOfTransportation: Attribute.Enumeration<['Air', 'Sea', 'Road']>;
-    EstimatedArrivalDate: Attribute.Date & Attribute.Required;
-    ActualArrivalDate: Attribute.Date & Attribute.Required;
-    TrackingNumber: Attribute.String;
-    ContainerID: Attribute.String;
-    Weight: Attribute.Decimal;
-    Volume: Attribute.String & Attribute.DefaultTo<'0.00x0.00'>;
-    ShippingCost: Attribute.Decimal & Attribute.Required;
-    Note: Attribute.String;
-    Status: Attribute.Enumeration<
-      ['Preparing', 'Arrived at Origin', 'In Transit', 'Delivered', 'Completed']
-    > &
-      Attribute.Required &
-      Attribute.DefaultTo<'Preparing'>;
-    ShippingCompany: Attribute.String;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::shipment.shipment',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::shipment.shipment',
       'oneToOne',
       'admin::user'
     > &
@@ -1465,7 +1416,6 @@ declare module '@strapi/types' {
       'api::product.product': ApiProductProduct;
       'api::purchase-order.purchase-order': ApiPurchaseOrderPurchaseOrder;
       'api::purchase-order-product.purchase-order-product': ApiPurchaseOrderProductPurchaseOrderProduct;
-      'api::shipment.shipment': ApiShipmentShipment;
       'api::supplier.supplier': ApiSupplierSupplier;
       'api::warehouse.warehouse': ApiWarehouseWarehouse;
       'api::warehouse-inventory.warehouse-inventory': ApiWarehouseInventoryWarehouseInventory;

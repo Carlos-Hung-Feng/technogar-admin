@@ -65,18 +65,24 @@
       "inversedBy": "users",
       "configurable": false
     },
-    "Purchase_Orders": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::purchase-order.purchase-order",
-      "mappedBy": "Received_By"
-    },
     "Profile": {
       "allowedTypes": [
         "images"
       ],
       "type": "media",
       "multiple": false
+    },
+    "Purchase_Orders": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::purchase-order.purchase-order",
+      "mappedBy": "Ordered_By"
+    },
+    "Invoices": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::invoice.invoice",
+      "mappedBy": "BilledBy"
     }
   }
 }
