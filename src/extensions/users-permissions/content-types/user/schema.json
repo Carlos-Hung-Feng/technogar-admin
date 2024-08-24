@@ -83,6 +83,12 @@
       "relation": "oneToMany",
       "target": "api::invoice.invoice",
       "mappedBy": "BilledBy"
+    },
+    "credit_notes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::credit-note.credit-note",
+      "mappedBy": "GeneratedUser"
     }
   }
 }

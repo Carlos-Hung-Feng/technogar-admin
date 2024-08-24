@@ -74,6 +74,17 @@
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
       "inversedBy": "Invoices"
+    },
+    "CreditNoteApplied": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::credit-note.credit-note",
+      "mappedBy": "AppliedToInvoice"
+    },
+    "Total": {
+      "type": "decimal",
+      "required": true,
+      "default": 0
     }
   }
 }

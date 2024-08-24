@@ -16,10 +16,6 @@
       "type": "string",
       "required": true
     },
-    "Description": {
-      "type": "text",
-      "required": true
-    },
     "RetailPrice": {
       "type": "decimal",
       "required": true
@@ -39,7 +35,7 @@
     },
     "Photos": {
       "type": "media",
-      "multiple": true,
+      "multiple": false,
       "required": false,
       "allowedTypes": [
         "images"
@@ -87,6 +83,14 @@
       "relation": "oneToMany",
       "target": "api::invoice-product.invoice-product",
       "mappedBy": "Product"
+    },
+    "Warranty": {
+      "type": "integer",
+      "default": 0
+    },
+    "Description": {
+      "type": "richtext",
+      "required": true
     }
   }
 }

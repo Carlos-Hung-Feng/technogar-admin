@@ -4,7 +4,8 @@
   "info": {
     "singularName": "invoice-product",
     "pluralName": "invoice-products",
-    "displayName": "Invoice_Product"
+    "displayName": "Invoice_Product",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -23,13 +24,22 @@
       "target": "api::product.product",
       "inversedBy": "Invoice_Products"
     },
-    "Quantity": {
-      "type": "integer",
-      "required": true
-    },
     "Price": {
       "type": "decimal",
       "required": true
+    },
+    "ReturnReason": {
+      "type": "enumeration",
+      "enum": [
+        "Change",
+        "Warranty"
+      ]
+    },
+    "CreditNote": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::credit-note.credit-note",
+      "inversedBy": "Invoice_Products"
     }
   }
 }

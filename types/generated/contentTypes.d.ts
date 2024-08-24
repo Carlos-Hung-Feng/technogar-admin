@@ -761,6 +761,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'oneToMany',
       'api::invoice.invoice'
     >;
+    credit_notes: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::credit-note.credit-note'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -814,6 +819,54 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::category.category',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiCreditNoteCreditNote extends Schema.CollectionType {
+  collectionName: 'credit_notes';
+  info: {
+    singularName: 'credit-note';
+    pluralName: 'credit-notes';
+    displayName: 'Credit_Note';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    CreditNoteNumber: Attribute.String & Attribute.Required & Attribute.Unique;
+    Total: Attribute.Decimal & Attribute.Required;
+    GeneratedUser: Attribute.Relation<
+      'api::credit-note.credit-note',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    AppliedToInvoice: Attribute.Relation<
+      'api::credit-note.credit-note',
+      'oneToOne',
+      'api::invoice.invoice'
+    >;
+    Status: Attribute.Enumeration<['Generated', 'Applied']>;
+    Invoice_Products: Attribute.Relation<
+      'api::credit-note.credit-note',
+      'oneToMany',
+      'api::invoice-product.invoice-product'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::credit-note.credit-note',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::credit-note.credit-note',
       'oneToOne',
       'admin::user'
     > &
@@ -925,6 +978,12 @@ export interface ApiInvoiceInvoice extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.user'
     >;
+    CreditNoteApplied: Attribute.Relation<
+      'api::invoice.invoice',
+      'oneToOne',
+      'api::credit-note.credit-note'
+    >;
+    Total: Attribute.Decimal & Attribute.Required & Attribute.DefaultTo<0>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -988,6 +1047,7 @@ export interface ApiInvoiceProductInvoiceProduct extends Schema.CollectionType {
     singularName: 'invoice-product';
     pluralName: 'invoice-products';
     displayName: 'Invoice_Product';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -1003,8 +1063,13 @@ export interface ApiInvoiceProductInvoiceProduct extends Schema.CollectionType {
       'manyToOne',
       'api::product.product'
     >;
-    Quantity: Attribute.Integer & Attribute.Required;
     Price: Attribute.Decimal & Attribute.Required;
+    ReturnReason: Attribute.Enumeration<['Change', 'Warranty']>;
+    CreditNote: Attribute.Relation<
+      'api::invoice-product.invoice-product',
+      'manyToOne',
+      'api::credit-note.credit-note'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1082,7 +1147,6 @@ export interface ApiProductProduct extends Schema.CollectionType {
   };
   attributes: {
     Name: Attribute.String & Attribute.Required;
-    Description: Attribute.Text & Attribute.Required;
     RetailPrice: Attribute.Decimal & Attribute.Required;
     MinimumQuantity: Attribute.Integer &
       Attribute.Required &
@@ -1118,6 +1182,8 @@ export interface ApiProductProduct extends Schema.CollectionType {
       'oneToMany',
       'api::invoice-product.invoice-product'
     >;
+    Warranty: Attribute.Integer & Attribute.DefaultTo<0>;
+    Description: Attribute.RichText & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1408,6 +1474,7 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::category.category': ApiCategoryCategory;
+      'api::credit-note.credit-note': ApiCreditNoteCreditNote;
       'api::customer.customer': ApiCustomerCustomer;
       'api::invoice.invoice': ApiInvoiceInvoice;
       'api::invoice-discount.invoice-discount': ApiInvoiceDiscountInvoiceDiscount;
