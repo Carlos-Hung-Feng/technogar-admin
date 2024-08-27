@@ -47,17 +47,6 @@
       "type": "date",
       "required": false
     },
-    "ProfilePicture": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
-    },
     "Note": {
       "type": "richtext"
     },
