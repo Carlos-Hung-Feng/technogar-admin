@@ -573,6 +573,37 @@ export interface PluginContentReleasesReleaseAction
   };
 }
 
+export interface PluginChartbrewChartbrew extends Schema.SingleType {
+  collectionName: 'chartbrews';
+  info: {
+    singularName: 'chartbrew';
+    pluralName: 'chartbrews';
+    displayName: 'Chartbrew';
+  };
+  options: {
+    draftAndPublish: false;
+    comment: '';
+  };
+  attributes: {
+    host: Attribute.String & Attribute.Required;
+    token: Attribute.String & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'plugin::chartbrew.chartbrew',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'plugin::chartbrew.chartbrew',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface PluginI18NLocale extends Schema.CollectionType {
   collectionName: 'i18n_locale';
   info: {
@@ -750,12 +781,22 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.role'
     >;
+    Profile: Attribute.Media;
     Purchase_Orders: Attribute.Relation<
       'plugin::users-permissions.user',
       'oneToMany',
       'api::purchase-order.purchase-order'
     >;
-    Profile: Attribute.Media;
+    Invoices: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::invoice.invoice'
+    >;
+    credit_notes: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::credit-note.credit-note'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -816,6 +857,54 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
   };
 }
 
+export interface ApiCreditNoteCreditNote extends Schema.CollectionType {
+  collectionName: 'credit_notes';
+  info: {
+    singularName: 'credit-note';
+    pluralName: 'credit-notes';
+    displayName: 'Credit_Note';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    CreditNoteNumber: Attribute.String & Attribute.Required & Attribute.Unique;
+    Total: Attribute.Decimal & Attribute.Required;
+    GeneratedUser: Attribute.Relation<
+      'api::credit-note.credit-note',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    AppliedToInvoice: Attribute.Relation<
+      'api::credit-note.credit-note',
+      'oneToOne',
+      'api::invoice.invoice'
+    >;
+    Status: Attribute.Enumeration<['Generated', 'Applied']>;
+    Invoice_Products: Attribute.Relation<
+      'api::credit-note.credit-note',
+      'oneToMany',
+      'api::invoice-product.invoice-product'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::credit-note.credit-note',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::credit-note.credit-note',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiCustomerCustomer extends Schema.CollectionType {
   collectionName: 'customers';
   info: {
@@ -842,9 +931,8 @@ export interface ApiCustomerCustomer extends Schema.CollectionType {
       'manyToOne',
       'api::payment-method.payment-method'
     >;
-    NIF: Attribute.String;
+    Identifier: Attribute.String;
     LastPurchaseDate: Attribute.Date;
-    ProfilePicture: Attribute.Media;
     Note: Attribute.RichText;
     CustomerType: Attribute.Enumeration<['Wholesale', 'Retail']> &
       Attribute.Required &
@@ -886,10 +974,6 @@ export interface ApiInvoiceInvoice extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    InvoiceNumber: Attribute.Integer & Attribute.Unique;
-    Subtotal: Attribute.Decimal & Attribute.Required;
-    Tax: Attribute.Decimal;
-    Total: Attribute.Decimal & Attribute.Required;
     Payment_Method: Attribute.Relation<
       'api::invoice.invoice',
       'manyToOne',
@@ -897,8 +981,6 @@ export interface ApiInvoiceInvoice extends Schema.CollectionType {
     >;
     PaidWith: Attribute.Decimal & Attribute.Required;
     Returned: Attribute.Decimal & Attribute.Required;
-    ReferenceNumber: Attribute.Integer;
-    NIF: Attribute.Integer;
     Invoice_Discount: Attribute.Relation<
       'api::invoice.invoice',
       'manyToOne',
@@ -914,6 +996,24 @@ export interface ApiInvoiceInvoice extends Schema.CollectionType {
       'oneToMany',
       'api::invoice-product.invoice-product'
     >;
+    Status: Attribute.Enumeration<['Pending', 'Paid', 'Canceled']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'Pending'>;
+    Note: Attribute.RichText;
+    InvoiceNumber: Attribute.String & Attribute.Required & Attribute.Unique;
+    NIF: Attribute.String & Attribute.Unique;
+    RNC: Attribute.String;
+    BilledBy: Attribute.Relation<
+      'api::invoice.invoice',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    CreditNoteApplied: Attribute.Relation<
+      'api::invoice.invoice',
+      'oneToOne',
+      'api::credit-note.credit-note'
+    >;
+    Total: Attribute.Decimal & Attribute.Required & Attribute.DefaultTo<0>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -977,6 +1077,7 @@ export interface ApiInvoiceProductInvoiceProduct extends Schema.CollectionType {
     singularName: 'invoice-product';
     pluralName: 'invoice-products';
     displayName: 'Invoice_Product';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -992,8 +1093,13 @@ export interface ApiInvoiceProductInvoiceProduct extends Schema.CollectionType {
       'manyToOne',
       'api::product.product'
     >;
-    Quantity: Attribute.Integer & Attribute.Required;
     Price: Attribute.Decimal & Attribute.Required;
+    ReturnReason: Attribute.Enumeration<['Change', 'Warranty']>;
+    CreditNote: Attribute.Relation<
+      'api::invoice-product.invoice-product',
+      'manyToOne',
+      'api::credit-note.credit-note'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1071,7 +1177,6 @@ export interface ApiProductProduct extends Schema.CollectionType {
   };
   attributes: {
     Name: Attribute.String & Attribute.Required;
-    Description: Attribute.Text;
     RetailPrice: Attribute.Decimal & Attribute.Required;
     MinimumQuantity: Attribute.Integer &
       Attribute.Required &
@@ -1101,13 +1206,14 @@ export interface ApiProductProduct extends Schema.CollectionType {
       'oneToMany',
       'api::purchase-order-product.purchase-order-product'
     >;
-    Slug: Attribute.UID<'api::product.product', 'Name'>;
     WholesalePrice: Attribute.Decimal & Attribute.Required;
     Invoice_Products: Attribute.Relation<
       'api::product.product',
       'oneToMany',
       'api::invoice-product.invoice-product'
     >;
+    Warranty: Attribute.Integer & Attribute.DefaultTo<0>;
+    Description: Attribute.RichText & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1156,24 +1262,13 @@ export interface ApiPurchaseOrderPurchaseOrder extends Schema.CollectionType {
       'plugin::users-permissions.user'
     >;
     OrderedDate: Attribute.Date & Attribute.Required;
-    Received_By: Attribute.Relation<
-      'api::purchase-order.purchase-order',
-      'manyToOne',
-      'plugin::users-permissions.user'
-    >;
-    ReceivedDate: Attribute.Date;
     Tax: Attribute.Decimal & Attribute.DefaultTo<0>;
     Freight: Attribute.Decimal & Attribute.DefaultTo<0>;
-    Total: Attribute.Decimal & Attribute.Required;
     Payment_Method: Attribute.Relation<
       'api::purchase-order.purchase-order',
       'manyToOne',
       'api::payment-method.payment-method'
     >;
-    Status: Attribute.Enumeration<
-      ['Ordered', 'In process', 'Received', 'Canceled']
-    > &
-      Attribute.DefaultTo<'Ordered'>;
     Document: Attribute.Media;
     ShippingAddress: Attribute.RichText & Attribute.Required;
     Note: Attribute.RichText;
@@ -1240,54 +1335,6 @@ export interface ApiPurchaseOrderProductPurchaseOrderProduct
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::purchase-order-product.purchase-order-product',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
-export interface ApiShipmentShipment extends Schema.CollectionType {
-  collectionName: 'shipments';
-  info: {
-    singularName: 'shipment';
-    pluralName: 'shipments';
-    displayName: 'Shipment';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    Origin: Attribute.Enumeration<['China', 'United State']> &
-      Attribute.Required;
-    Destination: Attribute.Enumeration<['Dominican Republic']> &
-      Attribute.Required;
-    ModeOfTransportation: Attribute.Enumeration<['Air', 'Sea', 'Road']>;
-    EstimatedArrivalDate: Attribute.Date & Attribute.Required;
-    ActualArrivalDate: Attribute.Date & Attribute.Required;
-    TrackingNumber: Attribute.String;
-    ContainerID: Attribute.String;
-    Weight: Attribute.Decimal;
-    Volume: Attribute.String & Attribute.DefaultTo<'0.00x0.00'>;
-    ShippingCost: Attribute.Decimal & Attribute.Required;
-    Note: Attribute.String;
-    Status: Attribute.Enumeration<
-      ['Preparing', 'Arrived at Origin', 'In Transit', 'Delivered', 'Completed']
-    > &
-      Attribute.Required &
-      Attribute.DefaultTo<'Preparing'>;
-    ShippingCompany: Attribute.String;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::shipment.shipment',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::shipment.shipment',
       'oneToOne',
       'admin::user'
     > &
@@ -1452,11 +1499,13 @@ declare module '@strapi/types' {
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
+      'plugin::chartbrew.chartbrew': PluginChartbrewChartbrew;
       'plugin::i18n.locale': PluginI18NLocale;
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::category.category': ApiCategoryCategory;
+      'api::credit-note.credit-note': ApiCreditNoteCreditNote;
       'api::customer.customer': ApiCustomerCustomer;
       'api::invoice.invoice': ApiInvoiceInvoice;
       'api::invoice-discount.invoice-discount': ApiInvoiceDiscountInvoiceDiscount;
@@ -1465,7 +1514,6 @@ declare module '@strapi/types' {
       'api::product.product': ApiProductProduct;
       'api::purchase-order.purchase-order': ApiPurchaseOrderPurchaseOrder;
       'api::purchase-order-product.purchase-order-product': ApiPurchaseOrderProductPurchaseOrderProduct;
-      'api::shipment.shipment': ApiShipmentShipment;
       'api::supplier.supplier': ApiSupplierSupplier;
       'api::warehouse.warehouse': ApiWarehouseWarehouse;
       'api::warehouse-inventory.warehouse-inventory': ApiWarehouseInventoryWarehouseInventory;

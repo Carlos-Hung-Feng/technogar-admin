@@ -39,24 +39,13 @@
       "target": "api::payment-method.payment-method",
       "inversedBy": "Customers"
     },
-    "NIF": {
+    "Identifier": {
       "type": "string",
       "required": false
     },
     "LastPurchaseDate": {
       "type": "date",
       "required": false
-    },
-    "ProfilePicture": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
     },
     "Note": {
       "type": "richtext"

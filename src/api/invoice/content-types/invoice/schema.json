@@ -12,22 +12,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "InvoiceNumber": {
-      "type": "integer",
-      "unique": true
-    },
-    "Subtotal": {
-      "type": "decimal",
-      "required": true
-    },
-    "Tax": {
-      "type": "decimal",
-      "required": false
-    },
-    "Total": {
-      "type": "decimal",
-      "required": true
-    },
     "Payment_Method": {
       "type": "relation",
       "relation": "manyToOne",
@@ -41,12 +25,6 @@
     "Returned": {
       "type": "decimal",
       "required": true
-    },
-    "ReferenceNumber": {
-      "type": "integer"
-    },
-    "NIF": {
-      "type": "integer"
     },
     "Invoice_Discount": {
       "type": "relation",
@@ -65,6 +43,48 @@
       "relation": "oneToMany",
       "target": "api::invoice-product.invoice-product",
       "mappedBy": "Invoice"
+    },
+    "Status": {
+      "type": "enumeration",
+      "enum": [
+        "Pending",
+        "Paid",
+        "Canceled"
+      ],
+      "default": "Pending",
+      "required": true
+    },
+    "Note": {
+      "type": "richtext"
+    },
+    "InvoiceNumber": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "NIF": {
+      "type": "string",
+      "unique": true
+    },
+    "RNC": {
+      "type": "string"
+    },
+    "BilledBy": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "Invoices"
+    },
+    "CreditNoteApplied": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::credit-note.credit-note",
+      "mappedBy": "AppliedToInvoice"
+    },
+    "Total": {
+      "type": "decimal",
+      "required": true,
+      "default": 0
     }
   }
 }

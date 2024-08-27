@@ -16,9 +16,6 @@
       "type": "string",
       "required": true
     },
-    "Description": {
-      "type": "text"
-    },
     "RetailPrice": {
       "type": "decimal",
       "required": true
@@ -38,7 +35,7 @@
     },
     "Photos": {
       "type": "media",
-      "multiple": true,
+      "multiple": false,
       "required": false,
       "allowedTypes": [
         "images"
@@ -77,10 +74,6 @@
       "target": "api::purchase-order-product.purchase-order-product",
       "mappedBy": "Product"
     },
-    "Slug": {
-      "type": "uid",
-      "targetField": "Name"
-    },
     "WholesalePrice": {
       "type": "decimal",
       "required": true
@@ -90,6 +83,14 @@
       "relation": "oneToMany",
       "target": "api::invoice-product.invoice-product",
       "mappedBy": "Product"
+    },
+    "Warranty": {
+      "type": "integer",
+      "default": 0
+    },
+    "Description": {
+      "type": "richtext",
+      "required": true
     }
   }
 }

@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "credit_notes",
+  "info": {
+    "singularName": "credit-note",
+    "pluralName": "credit-notes",
+    "displayName": "Credit_Note",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "CreditNoteNumber": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "Total": {
+      "type": "decimal",
+      "required": true,
+      "unique": false
+    },
+    "GeneratedUser": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "credit_notes"
+    },
+    "AppliedToInvoice": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::invoice.invoice",
+      "inversedBy": "CreditNoteApplied"
+    },
+    "Status": {
+      "type": "enumeration",
+      "enum": [
+        "Generated",
+        "Applied"
+      ]
+    },
+    "Invoice_Products": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::invoice-product.invoice-product",
+      "mappedBy": "CreditNote"
+    }
+  }
+}
