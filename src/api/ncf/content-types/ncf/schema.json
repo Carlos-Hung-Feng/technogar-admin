@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "ncfs",
+  "info": {
+    "singularName": "ncf",
+    "pluralName": "ncfs",
+    "displayName": "NCF",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Code": {
+      "type": "enumeration",
+      "enum": [
+        "B01",
+        "B02",
+        "B04"
+      ],
+      "required": true
+    },
+    "StartRange": {
+      "type": "integer",
+      "required": true,
+      "unique": true
+    },
+    "EndRange": {
+      "type": "integer",
+      "required": true,
+      "unique": true
+    },
+    "CurrentValue": {
+      "type": "integer",
+      "unique": true
+    }
+  }
+}

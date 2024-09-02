@@ -41,7 +41,8 @@
     },
     "Identifier": {
       "type": "string",
-      "required": false
+      "required": true,
+      "unique": true
     },
     "LastPurchaseDate": {
       "type": "date",
@@ -72,6 +73,11 @@
     },
     "Links": {
       "type": "richtext"
+    },
+    "CustomerCode": {
+      "type": "string",
+      "required": true,
+      "unique": true
     }
   }
 }
