@@ -887,6 +887,7 @@ export interface ApiCreditNoteCreditNote extends Schema.CollectionType {
       'oneToMany',
       'api::invoice-product.invoice-product'
     >;
+    NCF: Attribute.String & Attribute.Unique;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -931,7 +932,7 @@ export interface ApiCustomerCustomer extends Schema.CollectionType {
       'manyToOne',
       'api::payment-method.payment-method'
     >;
-    Identifier: Attribute.String;
+    Identifier: Attribute.String & Attribute.Required & Attribute.Unique;
     LastPurchaseDate: Attribute.Date;
     Note: Attribute.RichText;
     CustomerType: Attribute.Enumeration<['Wholesale', 'Retail']> &
@@ -944,6 +945,7 @@ export interface ApiCustomerCustomer extends Schema.CollectionType {
       'api::invoice.invoice'
     >;
     Links: Attribute.RichText;
+    CustomerCode: Attribute.String & Attribute.Required & Attribute.Unique;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1001,7 +1003,7 @@ export interface ApiInvoiceInvoice extends Schema.CollectionType {
       Attribute.DefaultTo<'Pending'>;
     Note: Attribute.RichText;
     InvoiceNumber: Attribute.String & Attribute.Required & Attribute.Unique;
-    NIF: Attribute.String & Attribute.Unique;
+    NCF: Attribute.String & Attribute.Unique;
     RNC: Attribute.String;
     BilledBy: Attribute.Relation<
       'api::invoice.invoice',
@@ -1114,6 +1116,32 @@ export interface ApiInvoiceProductInvoiceProduct extends Schema.CollectionType {
       'oneToOne',
       'admin::user'
     > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiNcfNcf extends Schema.CollectionType {
+  collectionName: 'ncfs';
+  info: {
+    singularName: 'ncf';
+    pluralName: 'ncfs';
+    displayName: 'NCF';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    Code: Attribute.Enumeration<['B01', 'B02', 'B04']> & Attribute.Required;
+    StartRange: Attribute.Integer & Attribute.Required & Attribute.Unique;
+    EndRange: Attribute.Integer & Attribute.Required & Attribute.Unique;
+    CurrentValue: Attribute.Integer & Attribute.Unique;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::ncf.ncf', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::ncf.ncf', 'oneToOne', 'admin::user'> &
       Attribute.Private;
   };
 }
@@ -1244,7 +1272,7 @@ export interface ApiPurchaseOrderPurchaseOrder extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    OrderNumber: Attribute.String;
+    OrderNumber: Attribute.String & Attribute.Required & Attribute.Unique;
     Supplier: Attribute.Relation<
       'api::purchase-order.purchase-order',
       'manyToOne',
@@ -1510,6 +1538,7 @@ declare module '@strapi/types' {
       'api::invoice.invoice': ApiInvoiceInvoice;
       'api::invoice-discount.invoice-discount': ApiInvoiceDiscountInvoiceDiscount;
       'api::invoice-product.invoice-product': ApiInvoiceProductInvoiceProduct;
+      'api::ncf.ncf': ApiNcfNcf;
       'api::payment-method.payment-method': ApiPaymentMethodPaymentMethod;
       'api::product.product': ApiProductProduct;
       'api::purchase-order.purchase-order': ApiPurchaseOrderPurchaseOrder;

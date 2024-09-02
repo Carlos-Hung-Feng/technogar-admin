@@ -46,6 +46,10 @@
       "relation": "oneToMany",
       "target": "api::invoice-product.invoice-product",
       "mappedBy": "CreditNote"
+    },
+    "NCF": {
+      "type": "string",
+      "unique": true
     }
   }
 }

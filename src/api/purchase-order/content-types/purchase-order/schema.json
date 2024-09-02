@@ -14,7 +14,8 @@
   "attributes": {
     "OrderNumber": {
       "type": "string",
-      "required": false
+      "required": true,
+      "unique": true
     },
     "Supplier": {
       "type": "relation",
