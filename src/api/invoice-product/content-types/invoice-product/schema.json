@@ -40,6 +40,10 @@
       "relation": "manyToOne",
       "target": "api::credit-note.credit-note",
       "inversedBy": "Invoice_Products"
+    },
+    "Cost": {
+      "type": "decimal",
+      "required": false
     }
   }
 }

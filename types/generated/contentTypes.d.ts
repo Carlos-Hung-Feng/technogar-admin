@@ -964,6 +964,42 @@ export interface ApiCustomerCustomer extends Schema.CollectionType {
   };
 }
 
+export interface ApiExpenseExpense extends Schema.CollectionType {
+  collectionName: 'expenses';
+  info: {
+    singularName: 'expense';
+    pluralName: 'expenses';
+    displayName: 'Expense';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    Description: Attribute.Text & Attribute.Required;
+    Amount: Attribute.Decimal & Attribute.Required;
+    Type: Attribute.Enumeration<
+      ['Shipment', 'Marketing', 'Payroll', 'Electricity', 'Gasoline', 'Others']
+    > &
+      Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::expense.expense',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::expense.expense',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiInvoiceInvoice extends Schema.CollectionType {
   collectionName: 'invoices';
   info: {
@@ -1016,6 +1052,9 @@ export interface ApiInvoiceInvoice extends Schema.CollectionType {
       'api::credit-note.credit-note'
     >;
     Total: Attribute.Decimal & Attribute.Required & Attribute.DefaultTo<0>;
+    Delivery: Attribute.Boolean &
+      Attribute.Required &
+      Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1102,6 +1141,7 @@ export interface ApiInvoiceProductInvoiceProduct extends Schema.CollectionType {
       'manyToOne',
       'api::credit-note.credit-note'
     >;
+    Cost: Attribute.Decimal;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1535,6 +1575,7 @@ declare module '@strapi/types' {
       'api::category.category': ApiCategoryCategory;
       'api::credit-note.credit-note': ApiCreditNoteCreditNote;
       'api::customer.customer': ApiCustomerCustomer;
+      'api::expense.expense': ApiExpenseExpense;
       'api::invoice.invoice': ApiInvoiceInvoice;
       'api::invoice-discount.invoice-discount': ApiInvoiceDiscountInvoiceDiscount;
       'api::invoice-product.invoice-product': ApiInvoiceProductInvoiceProduct;
