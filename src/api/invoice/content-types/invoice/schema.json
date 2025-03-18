@@ -85,11 +85,6 @@
       "type": "decimal",
       "required": true,
       "default": 0
-    },
-    "Delivery": {
-      "type": "boolean",
-      "default": false,
-      "required": true
     }
   }
 }

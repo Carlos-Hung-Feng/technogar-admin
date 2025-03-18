@@ -24,10 +24,13 @@
       "type": "enumeration",
       "enum": [
         "Shipment",
+        "Instalation",
         "Marketing",
         "Payroll",
         "Electricity",
         "Gasoline",
+        "Purchase",
+        "Services",
         "Others"
       ],
       "required": true

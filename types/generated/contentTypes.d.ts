@@ -979,7 +979,17 @@ export interface ApiExpenseExpense extends Schema.CollectionType {
     Description: Attribute.Text & Attribute.Required;
     Amount: Attribute.Decimal & Attribute.Required;
     Type: Attribute.Enumeration<
-      ['Shipment', 'Marketing', 'Payroll', 'Electricity', 'Gasoline', 'Others']
+      [
+        'Shipment',
+        'Instalation',
+        'Marketing',
+        'Payroll',
+        'Electricity',
+        'Gasoline',
+        'Purchase',
+        'Services',
+        'Others'
+      ]
     > &
       Attribute.Required;
     createdAt: Attribute.DateTime;
@@ -1052,9 +1062,6 @@ export interface ApiInvoiceInvoice extends Schema.CollectionType {
       'api::credit-note.credit-note'
     >;
     Total: Attribute.Decimal & Attribute.Required & Attribute.DefaultTo<0>;
-    Delivery: Attribute.Boolean &
-      Attribute.Required &
-      Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
