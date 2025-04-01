@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "expenses",
+  "info": {
+    "singularName": "expense",
+    "pluralName": "expenses",
+    "displayName": "Expense",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Description": {
+      "type": "text",
+      "required": true
+    },
+    "Amount": {
+      "type": "decimal",
+      "required": true
+    },
+    "Type": {
+      "type": "enumeration",
+      "enum": [
+        "Shipment",
+        "Instalation",
+        "Marketing",
+        "Payroll",
+        "Electricity",
+        "Gasoline",
+        "Purchase",
+        "Services",
+        "Others"
+      ],
+      "required": true
+    }
+  }
+}
