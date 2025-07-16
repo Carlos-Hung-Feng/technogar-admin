@@ -876,12 +876,11 @@ export interface ApiCreditNoteCreditNote extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.user'
     >;
-    AppliedToInvoice: Attribute.Relation<
+    AppliedToInvoices: Attribute.Relation<
       'api::credit-note.credit-note',
-      'oneToOne',
+      'oneToMany',
       'api::invoice.invoice'
     >;
-    Status: Attribute.Enumeration<['Generated', 'Applied']>;
     Invoice_Products: Attribute.Relation<
       'api::credit-note.credit-note',
       'oneToMany',
@@ -1056,12 +1055,13 @@ export interface ApiInvoiceInvoice extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.user'
     >;
+    Total: Attribute.Decimal & Attribute.Required & Attribute.DefaultTo<0>;
     CreditNoteApplied: Attribute.Relation<
       'api::invoice.invoice',
-      'oneToOne',
+      'manyToOne',
       'api::credit-note.credit-note'
     >;
-    Total: Attribute.Decimal & Attribute.Required & Attribute.DefaultTo<0>;
+    CreditNoteAppliedValue: Attribute.Decimal & Attribute.DefaultTo<0>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

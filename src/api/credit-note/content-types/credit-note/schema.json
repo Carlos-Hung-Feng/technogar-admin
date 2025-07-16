@@ -28,18 +28,11 @@
       "target": "plugin::users-permissions.user",
       "inversedBy": "credit_notes"
     },
-    "AppliedToInvoice": {
+    "AppliedToInvoices": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "oneToMany",
       "target": "api::invoice.invoice",
-      "inversedBy": "CreditNoteApplied"
-    },
-    "Status": {
-      "type": "enumeration",
-      "enum": [
-        "Generated",
-        "Applied"
-      ]
+      "mappedBy": "CreditNoteApplied"
     },
     "Invoice_Products": {
       "type": "relation",
