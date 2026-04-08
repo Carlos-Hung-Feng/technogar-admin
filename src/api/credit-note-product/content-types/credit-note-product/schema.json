@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "credit_note_products",
+  "info": {
+    "singularName": "credit-note-product",
+    "pluralName": "credit-note-products",
+    "displayName": "Credit_Note_Product"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Credit_Note": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::credit-note.credit-note",
+      "inversedBy": "Credit_Note_Products"
+    },
+    "Product": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::product.product",
+      "inversedBy": "Credit_Note_Products"
+    },
+    "Quantity": {
+      "type": "integer",
+      "required": true,
+      "default": 1
+    },
+    "Price": {
+      "type": "decimal",
+      "required": true
+    },
+    "Reason": {
+      "type": "enumeration",
+      "enum": [
+        "Change",
+        "Warranty"
+      ]
+    }
+  }
+}

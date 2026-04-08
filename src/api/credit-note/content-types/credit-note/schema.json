@@ -17,7 +17,7 @@
       "required": true,
       "unique": true
     },
-    "Total": {
+    "TotalAmount": {
       "type": "decimal",
       "required": true,
       "unique": false
@@ -28,21 +28,31 @@
       "target": "plugin::users-permissions.user",
       "inversedBy": "credit_notes"
     },
-    "AppliedToInvoices": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::invoice.invoice",
-      "mappedBy": "CreditNoteApplied"
-    },
-    "Invoice_Products": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::invoice-product.invoice-product",
-      "mappedBy": "CreditNote"
-    },
     "NCF": {
       "type": "string",
       "unique": true
+    },
+    "RemainingAmount": {
+      "type": "decimal",
+      "required": true
+    },
+    "Credit_Note_Products": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::credit-note-product.credit-note-product",
+      "mappedBy": "Credit_Note"
+    },
+    "Credit_Note_Applications": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::credit-note-application.credit-note-application",
+      "mappedBy": "Credit_Note"
+    },
+    "Created_From_Invoice": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::invoice.invoice",
+      "inversedBy": "Credit_Notes"
     }
   }
 }

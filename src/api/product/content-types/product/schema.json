@@ -91,6 +91,45 @@
     "Description": {
       "type": "richtext",
       "required": true
+    },
+    "SKU": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "Online": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "WholesalePrice_2": {
+      "type": "decimal",
+      "required": true
+    },
+    "WholesalePrice_3": {
+      "type": "decimal",
+      "required": true
+    },
+    "WholesalePercentage": {
+      "type": "integer",
+      "required": true,
+      "default": 10
+    },
+    "WholesalePercentage_2": {
+      "type": "integer",
+      "required": true,
+      "default": 20
+    },
+    "WholesalePercentage_3": {
+      "type": "integer",
+      "required": true,
+      "default": 30
+    },
+    "Credit_Note_Products": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::credit-note-product.credit-note-product",
+      "mappedBy": "Product"
     }
   }
 }

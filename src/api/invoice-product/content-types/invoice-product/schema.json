@@ -28,22 +28,14 @@
       "type": "decimal",
       "required": true
     },
-    "ReturnReason": {
-      "type": "enumeration",
-      "enum": [
-        "Change",
-        "Warranty"
-      ]
-    },
-    "CreditNote": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::credit-note.credit-note",
-      "inversedBy": "Invoice_Products"
-    },
     "Cost": {
       "type": "decimal",
       "required": false
+    },
+    "Quantity": {
+      "type": "integer",
+      "required": true,
+      "default": 1
     }
   }
 }

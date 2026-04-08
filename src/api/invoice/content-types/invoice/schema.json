@@ -80,15 +80,20 @@
       "required": true,
       "default": 0
     },
-    "CreditNoteApplied": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::credit-note.credit-note",
-      "inversedBy": "AppliedToInvoices"
+    "Shipping": {
+      "type": "decimal"
     },
-    "CreditNoteAppliedValue": {
-      "type": "decimal",
-      "default": 0
+    "Credit_Note_Applications": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::credit-note-application.credit-note-application",
+      "mappedBy": "Invoice"
+    },
+    "Credit_Notes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::credit-note.credit-note",
+      "mappedBy": "Created_From_Invoice"
     }
   }
 }
