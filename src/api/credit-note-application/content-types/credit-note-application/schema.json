@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "credit_note_applications",
+  "info": {
+    "singularName": "credit-note-application",
+    "pluralName": "credit-note-applications",
+    "displayName": "Credit_Note_Application"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Credit_Note": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::credit-note.credit-note",
+      "inversedBy": "Credit_Note_Applications"
+    },
+    "Invoice": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::invoice.invoice",
+      "inversedBy": "Credit_Note_Applications"
+    },
+    "AppliedAmount": {
+      "type": "decimal",
+      "required": true
+    }
+  }
+}

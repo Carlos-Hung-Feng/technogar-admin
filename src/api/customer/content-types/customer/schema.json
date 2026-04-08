@@ -25,7 +25,7 @@
     },
     "Address": {
       "type": "richtext",
-      "required": true
+      "required": false
     },
     "Product_Preferences": {
       "type": "relation",
@@ -54,8 +54,10 @@
     "CustomerType": {
       "type": "enumeration",
       "enum": [
+        "Retail",
         "Wholesale",
-        "Retail"
+        "Wholesale_2",
+        "Wholesale_3"
       ],
       "required": true,
       "default": "Wholesale"
@@ -78,6 +80,11 @@
       "type": "string",
       "required": true,
       "unique": true
+    },
+    "IsRNC": {
+      "type": "boolean",
+      "default": false,
+      "required": true
     }
   }
 }

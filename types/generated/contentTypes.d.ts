@@ -870,24 +870,29 @@ export interface ApiCreditNoteCreditNote extends Schema.CollectionType {
   };
   attributes: {
     CreditNoteNumber: Attribute.String & Attribute.Required & Attribute.Unique;
-    Total: Attribute.Decimal & Attribute.Required;
+    TotalAmount: Attribute.Decimal & Attribute.Required;
     GeneratedUser: Attribute.Relation<
       'api::credit-note.credit-note',
       'manyToOne',
       'plugin::users-permissions.user'
     >;
-    AppliedToInvoice: Attribute.Relation<
-      'api::credit-note.credit-note',
-      'oneToOne',
-      'api::invoice.invoice'
-    >;
-    Status: Attribute.Enumeration<['Generated', 'Applied']>;
-    Invoice_Products: Attribute.Relation<
+    NCF: Attribute.String & Attribute.Unique;
+    RemainingAmount: Attribute.Decimal & Attribute.Required;
+    Credit_Note_Products: Attribute.Relation<
       'api::credit-note.credit-note',
       'oneToMany',
-      'api::invoice-product.invoice-product'
+      'api::credit-note-product.credit-note-product'
     >;
-    NCF: Attribute.String & Attribute.Unique;
+    Credit_Note_Applications: Attribute.Relation<
+      'api::credit-note.credit-note',
+      'oneToMany',
+      'api::credit-note-application.credit-note-application'
+    >;
+    Created_From_Invoice: Attribute.Relation<
+      'api::credit-note.credit-note',
+      'manyToOne',
+      'api::invoice.invoice'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -899,6 +904,90 @@ export interface ApiCreditNoteCreditNote extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::credit-note.credit-note',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiCreditNoteApplicationCreditNoteApplication
+  extends Schema.CollectionType {
+  collectionName: 'credit_note_applications';
+  info: {
+    singularName: 'credit-note-application';
+    pluralName: 'credit-note-applications';
+    displayName: 'Credit_Note_Application';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    Credit_Note: Attribute.Relation<
+      'api::credit-note-application.credit-note-application',
+      'manyToOne',
+      'api::credit-note.credit-note'
+    >;
+    Invoice: Attribute.Relation<
+      'api::credit-note-application.credit-note-application',
+      'manyToOne',
+      'api::invoice.invoice'
+    >;
+    AppliedAmount: Attribute.Decimal & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::credit-note-application.credit-note-application',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::credit-note-application.credit-note-application',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiCreditNoteProductCreditNoteProduct
+  extends Schema.CollectionType {
+  collectionName: 'credit_note_products';
+  info: {
+    singularName: 'credit-note-product';
+    pluralName: 'credit-note-products';
+    displayName: 'Credit_Note_Product';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    Credit_Note: Attribute.Relation<
+      'api::credit-note-product.credit-note-product',
+      'manyToOne',
+      'api::credit-note.credit-note'
+    >;
+    Product: Attribute.Relation<
+      'api::credit-note-product.credit-note-product',
+      'manyToOne',
+      'api::product.product'
+    >;
+    Quantity: Attribute.Integer & Attribute.Required & Attribute.DefaultTo<1>;
+    Price: Attribute.Decimal & Attribute.Required;
+    Reason: Attribute.Enumeration<['Change', 'Warranty']>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::credit-note-product.credit-note-product',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::credit-note-product.credit-note-product',
       'oneToOne',
       'admin::user'
     > &
@@ -921,7 +1010,7 @@ export interface ApiCustomerCustomer extends Schema.CollectionType {
     FullName: Attribute.String & Attribute.Required;
     Email: Attribute.Email;
     Telephone: Attribute.String & Attribute.Required;
-    Address: Attribute.RichText & Attribute.Required;
+    Address: Attribute.RichText;
     Product_Preferences: Attribute.Relation<
       'api::customer.customer',
       'manyToMany',
@@ -935,7 +1024,9 @@ export interface ApiCustomerCustomer extends Schema.CollectionType {
     Identifier: Attribute.String & Attribute.Required & Attribute.Unique;
     LastPurchaseDate: Attribute.Date;
     Note: Attribute.RichText;
-    CustomerType: Attribute.Enumeration<['Wholesale', 'Retail']> &
+    CustomerType: Attribute.Enumeration<
+      ['Retail', 'Wholesale', 'Wholesale_2', 'Wholesale_3']
+    > &
       Attribute.Required &
       Attribute.DefaultTo<'Wholesale'>;
     Active: Attribute.Boolean & Attribute.DefaultTo<true>;
@@ -946,6 +1037,7 @@ export interface ApiCustomerCustomer extends Schema.CollectionType {
     >;
     Links: Attribute.RichText;
     CustomerCode: Attribute.String & Attribute.Required & Attribute.Unique;
+    IsRNC: Attribute.Boolean & Attribute.Required & Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1056,12 +1148,18 @@ export interface ApiInvoiceInvoice extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.user'
     >;
-    CreditNoteApplied: Attribute.Relation<
+    Total: Attribute.Decimal & Attribute.Required & Attribute.DefaultTo<0>;
+    Shipping: Attribute.Decimal;
+    Credit_Note_Applications: Attribute.Relation<
       'api::invoice.invoice',
-      'oneToOne',
+      'oneToMany',
+      'api::credit-note-application.credit-note-application'
+    >;
+    Credit_Notes: Attribute.Relation<
+      'api::invoice.invoice',
+      'oneToMany',
       'api::credit-note.credit-note'
     >;
-    Total: Attribute.Decimal & Attribute.Required & Attribute.DefaultTo<0>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1142,13 +1240,8 @@ export interface ApiInvoiceProductInvoiceProduct extends Schema.CollectionType {
       'api::product.product'
     >;
     Price: Attribute.Decimal & Attribute.Required;
-    ReturnReason: Attribute.Enumeration<['Change', 'Warranty']>;
-    CreditNote: Attribute.Relation<
-      'api::invoice-product.invoice-product',
-      'manyToOne',
-      'api::credit-note.credit-note'
-    >;
     Cost: Attribute.Decimal;
+    Quantity: Attribute.Integer & Attribute.Required & Attribute.DefaultTo<1>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1289,6 +1382,24 @@ export interface ApiProductProduct extends Schema.CollectionType {
     >;
     Warranty: Attribute.Integer & Attribute.DefaultTo<0>;
     Description: Attribute.RichText & Attribute.Required;
+    SKU: Attribute.String & Attribute.Required & Attribute.Unique;
+    Online: Attribute.Boolean & Attribute.Required & Attribute.DefaultTo<false>;
+    WholesalePrice_2: Attribute.Decimal & Attribute.Required;
+    WholesalePrice_3: Attribute.Decimal & Attribute.Required;
+    WholesalePercentage: Attribute.Integer &
+      Attribute.Required &
+      Attribute.DefaultTo<10>;
+    WholesalePercentage_2: Attribute.Integer &
+      Attribute.Required &
+      Attribute.DefaultTo<20>;
+    WholesalePercentage_3: Attribute.Integer &
+      Attribute.Required &
+      Attribute.DefaultTo<30>;
+    Credit_Note_Products: Attribute.Relation<
+      'api::product.product',
+      'oneToMany',
+      'api::credit-note-product.credit-note-product'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1581,6 +1692,8 @@ declare module '@strapi/types' {
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::category.category': ApiCategoryCategory;
       'api::credit-note.credit-note': ApiCreditNoteCreditNote;
+      'api::credit-note-application.credit-note-application': ApiCreditNoteApplicationCreditNoteApplication;
+      'api::credit-note-product.credit-note-product': ApiCreditNoteProductCreditNoteProduct;
       'api::customer.customer': ApiCustomerCustomer;
       'api::expense.expense': ApiExpenseExpense;
       'api::invoice.invoice': ApiInvoiceInvoice;
